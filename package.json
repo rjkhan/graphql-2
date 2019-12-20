@@ -19,6 +19,11 @@
   "homepage": "https://github.com/rjkhan/graphql-2#readme",
   "dependencies": {
     "apollo-server": "^2.9.14",
-    "graphql": "^14.5.8"
+    "core-js": "^3.6.0",
+    "graphql": "^14.5.8",
+    "knex": "^0.20.4",
+    "mysql": "^2.17.1",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5"
   }
 }
