@@ -15,18 +15,19 @@
 
 // module.exports = con;
 
-
+var connectioString = process.env.PG_CONNECTION_STRING;
 var con = require('knex')({
-  client: 'mysql',
-  version: '5.7',
-  connection: {
-    host : 'Rabnawazs-MacBook-Pro.local',
-    user : 'root',
-    password : 'root',
-    database : 'pp'
-  }
+  client: 'pg',
+  connection: connectioString,
+  searchPath: ['knex', 'public'],
 });
+
+
+
+
 if (con)
   console.log("Connected!");
+else
+  console.log("Database not connected! Connection Error");
 
 module.exports = con
