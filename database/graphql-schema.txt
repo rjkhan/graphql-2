@@ -1,0 +1,284 @@
+type Query 
+{
+	faculty(nr: ID!): Faculty
+	university(nr: ID!): University
+	researchGroup(nr: ID!): ResearchGroup
+	lecturer(nr: ID!): Lecturer
+	department(nr:ID!): Department
+	graduateStudents(where: GraduateStudentWhereInput, limit: int, order:[GraduateStudentField]): [GraduateStudent]
+	publicationSearch(field: publicationField!, criterion: StringCriterion!, pattern: String!): [Publication]
+}
+
+type University  
+{ 
+	id: ID! 
+	undergraduateDegreeObtainedByFaculty: [Faculty] 
+	mastergraduateDegreeObtainers: [Faculty] 
+	doctoralDegreeObtainers: [Faculty] 
+	doctoralDegreeObtainers(where: FacultyWhereInput): [Faculty] 
+	undergraduateDegreeObtainedBystudent: [GraduateStudent]
+	undergraduateDegreeObtainedBystudent(where: GraduateStudentWhereInput): [GraduateStudent]
+	undergraduateDegreeObtainedBystudent(limit: Int, offset: Int): [GraduateStudent]
+	departments: [Department] 
+	undergraduateStudentConnection:CollectionOfEdgesToUgStudents
+} 
+
+interface Faculty  
+{ 
+	id: ID! 
+	telephone: String 
+	emailAddress: String 
+	undergraduteDegreeFrom: University 
+	masterDegreeFrom: University 
+	doctoralDegreeFrom: University 
+	worksFor: Department 
+	teacherOfGraduateCourses: [GraduateCourse] 
+	teacherOfUndergraduateCourses: [Course] 
+	publications: [Publication] 
+} 
+
+type Department  
+{ 
+	id: ID! 
+	subOrganizationOf: University 
+	head: FullProfessor 
+	researchGroups: [ResearchGroup] 
+	faculties: [Faculty] 
+	professors: [Professor]
+	lecturers: [FullProfessor]
+	graduateStudents: [GraduateStudent] 
+	undergraduateStudents: [undergraduateStudent] 
+} 
+
+type ResearchGroup  
+{ 
+	id: ID! 
+	subOrgnizationOf: Department 
+} 
+
+union Professor = AssistantProfessor | AssociateProfessor | FullProfessor 
+ 
+type Lecturer implements Faculty  
+{ 
+	id: ID! 
+	telephone: String 
+	emailAddress: String 
+	undergraduteDegreeFrom: University 
+	masterDegreeFrom: University 
+	doctoralDegreeFrom: University 
+	worksFor: Department 
+	graduateCourses: [GraduateCourse] 
+	courses: [Course] 
+	publications: [Publication] 
+} 
+
+type AssociateProfessor implements Faculty  
+{ 
+	id: ID! 
+	telephone: String 
+	emailAddress: String 
+	researchInterest: String 
+	undergraduteDegreeFrom: University 
+	masterDegreeFrom: University 
+	doctoralDegreeFrom: University 
+	worksFor: Department 
+	graduateCourses: [GraduateCourse] 
+	courses: [Course] 
+	publications: [Publication]
+	publications(order: PublicationSortCriterion): [Publication]
+	supervisedStudents: [Student] 
+	supervisedGraduateStudents: [GraduateStudent] 
+	supervisedUndergraduateStudents: [UndergraduateStudent] 
+} 
+
+type AssistantProfessor implements Faculty  
+{ 
+	id: ID! 
+	telephone: String 
+	emailAddress: String 
+	researchInterest: String 
+	undergraduteDegreeFrom: University 
+	masterDegreeFrom: University 
+	doctoralDegreeFrom: University 
+	worksFor: Department 
+	graduateCourses: [GraduateCourse] 
+	courses: [Course] 
+	publications: [Publication]
+	publications(order: PublicationSortCriterion): [Publication] 
+	supervisedStudents: [Student] 
+	supervisedGraduateStudents: [GraduateStudent] 
+	supervisedUndergraduateStudents: [UndergraduateStudent] 
+} 
+
+type FullProfessor implements Faculty  
+{ 
+	id: ID! 
+	headOf: Department 
+	telephone: String 
+	emailAddress: String 
+	researchInterest: String 
+	undergraduteDegreeFrom: University 
+	masterDegreeFrom: University 
+	doctoralDegreeFrom: University 
+	worksFor: Department 
+	graduateCourses: [GraduateCourse] 
+	courses: [Course] 
+	publications: [Publication] 
+	publications(order: PublicationSortCriterion): [Publication]
+	supervisedStudents: [Student] 
+	supervisedGraduateStudents: [GraduateStudent] 
+	supervisedUndergraduateStudents: [UndergraduateStudent] 
+} 
+
+union Author=Faculty | GraduateStudent 
+ 
+type Publication  
+{ 
+	id: ID! 
+	title: String 
+	abstract: String 
+	authors: [Author] 
+}  
+
+type GraduateStudent  
+{ 
+	id: ID! 
+	telephone: String 
+	emailAddress: String 
+	age: Int
+	memberOf: Department 
+	undergraduateDegreeFrom: University 
+	advisor: Professor 
+	takeGraduateCourses: [GraduateCourse] 
+	assistCourses: [UndergraduateCourse] 
+} 
+ 
+type UndergraduateStudent  
+{ 
+	id: ID! 
+	telephone: String 
+	emailAddress: String 
+	age: Int
+	memberOf: Department 
+	advisor: Professor 
+	takeCourses: [UndergraduateCourse] 
+} 
+
+type GraduateCourse  
+{ 
+	id: ID! 
+	teachedby: Faculty 
+	graduateStudents: [GraduateStudent] 
+} 
+
+type UndergraduateCourse  
+{ 
+	id: ID! 
+	teachedby: Faculty 
+	undergraduateStudents: [UndergraduateStudent] 
+	teachingAssistants: GraduateStudent 
+} 
+
+
+input FacultyWhereInput
+{
+	worksFor: DepartmentWhereInput
+}
+
+input DepartmentWhereInput
+{
+	nr: ID
+}
+
+input GraduateStudentWhereInput
+{
+	AND: [GraduateStudentWhereInput!]
+	advisor: ProfessorWhereInput
+	university: UniversityWhereInput
+	age: NumberMatching
+}
+
+input UniversityWhereInput
+{
+	nr: ID
+}
+
+input ProfessorWhereInput
+{
+	nr: ID
+	researchInterest: StringMatching
+}
+
+input StringMatching
+{
+  criterion: StringCriterion
+  pattern: String
+}
+
+input NumberMatching
+{
+  criterion: NumberCriterion
+  pattern: int
+}
+
+enum NumberCriterion 
+{
+  MORETHAN
+  LESSTHAN
+  EQUALS
+}
+
+enum StringCriterion 
+{
+  CONTAINS
+  START_WITH
+  END_WITH
+  EQUALS  
+}
+
+input PublicationSortCriterion
+{
+  field: PublicationField
+  direction: SortDirection
+}
+
+enum PublicationField
+{
+	title
+	abstract
+}
+
+enum SortDirection 
+{
+  ASC
+  DESC
+}
+
+enum GraduateStudentField
+{
+	id
+	telephone
+	emailAddress
+	memberOf
+	undergraduateDegreeFrom
+	advisor
+}
+
+type CollectionOfEdgesToUgStudents
+{
+	aggregate: AggregateUgStudents!
+}
+
+type AggregateUgStudents
+{
+	count:Int!
+	age: AgeAggregationOfUgStudents!
+}
+
+type AgeAggregationOfUgStudents
+{
+	sum: Float!
+	avg: Float!
+	max: Float!
+	min: Float!
+}
