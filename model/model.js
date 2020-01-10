@@ -3,6 +3,7 @@ class Emp {
 	  // Fields
 	  debugger;
 	  args = JSON.parse(JSON.stringify(args))
+		this.nr = args.nr
 	  this.emp_no = args.emp_no;
 	  this.birth_date = args.birth_date;
 	  this.first_name = args.first_name;

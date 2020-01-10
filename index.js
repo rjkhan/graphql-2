@@ -7,21 +7,15 @@ const { ApolloServer } = require("apollo-server");
 //const typeDefs = require('./scheme');
 const resolvers = require("./resolver");
 const typeDefs = require("./typeDefs");
-//const con = require("./db_connect");
-//const { GraphQLScalarType } = require('graphql');
-//const { Kind } = require('graphql/language');
-
-// const con = require("./database/db");
-
-
-// var query = con.select().from('faculty');
-// query.then(function(row) { 
-// 	console.log(row); 
-// });
 
 
 
-const server = new ApolloServer({ typeDefs, resolvers });
+
+const server = new ApolloServer({ 
+	typeDefs,
+	resolvers,
+	tracing: true 
+});
 
 server.listen().then(({ url }) => {
 	console.log(`🚀 Server ready at ${url}`);
