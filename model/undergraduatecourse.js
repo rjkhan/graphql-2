@@ -6,6 +6,7 @@ class UndergraduateCourses {
 		this.id = args.nr;
 		this.teacher = args.teacher;
 		this.teachingassistant = args.teachingassistant;
+	
 
 	}
 
